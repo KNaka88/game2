@@ -1,0 +1,14 @@
+
+#spacePressedShow {
+  display: none;
+}
+
+
+#area {
+  border: 2px solid black;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 600px;
+  height: 600px;
+}
