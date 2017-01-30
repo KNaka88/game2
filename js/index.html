@@ -5,7 +5,7 @@
     <title>Gamedev Canvas Workshop</title>
     <style>
     	* { padding: 0; margin: 0; }
-    	canvas { background: #000; display: block; margin: 0 auto; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
     </style>
     <!-- <script src='js/jquery-3.1.1.js'></script>
     <link rel='stylesheet' href='css/styles.css'> -->
@@ -13,8 +13,7 @@
 
 
   <body>
-    <canvas id="myCanvas" width="500" height="500"></canvas>
-
+    <canvas id="myCanvas" width="480" height="320"></canvas>
   </body>
 
 
@@ -41,10 +40,11 @@
   var leftPressed = false;
 
   //block
+
   var brickRowCount = 3;
-  var brickColumnCount = 7;
-  var brickWidth = 50;
-  var brickHeight = 50;
+  var brickColumnCount = 5;
+  var brickWidth = 75;
+  var brickHeight = 20;
   var brickPadding = 10;
   var brickOffsetTop = 30;
   var brickOffsetLeft = 30;
@@ -52,20 +52,6 @@
   //score $ lives
   var score = 0;
   var lives = 3;
-
-  //Invador Pics
-  var enemyReady = false;
-  var enemyReady2 = false;
-  var enemyImg = new Image();
-  enemyImg.onload = function() {
-    enemyReady = true;
-  };
-  var enemyImg2 = new Image();
-    enemyImg.onload = function() {
-    enemyReady = true;
-  };
-  enemyImg.src = "img/invador.gif";
-  enemyImg2.src = "img/invador2.gif";
 
 
   //Controller Settings
@@ -103,7 +89,7 @@
   for(var c=0; c<brickColumnCount; c++){
     bricks[c] = [];
     for(var r=0; r<brickRowCount; r++){
-      bricks[c][r] = { x:0, y:0, status: 1, color: "#0095DD", solidness: 2 };
+      bricks[c][r] = { x:0, y:0, status: 1, color: "#0095DD", solidness: 3 };
     }
   }
   //collision Detection
@@ -119,6 +105,20 @@
             b.solidness -= 1;
             console.log(b.solidness);
 
+
+            //Change the color if ball hit the block
+            switch(b.solidness){
+              case 2:
+                b.color = "darkgreen";
+                break;
+
+              case 1:
+                b.color = "darkred";
+                break;
+
+              default:
+                b.color = "#000000";
+            }
 
             //if user hit the block 3times, dissapear the block and speed up
             if(b.solidness === 0){
@@ -170,13 +170,9 @@
           bricks[c][r].x = brickX;
           bricks[c][r].y = brickY;
           ctx.beginPath();
-          if(enemyReady){
-            if(bricks[c][r].solidness === 2){
-              ctx.drawImage(enemyImg, brickX, brickY, brickWidth, brickHeight);
-            }else if(bricks[c][r].solidness === 1){
-              ctx.drawImage(enemyImg2, brickX, brickY, brickWidth, brickHeight);
-            }
-          }
+          ctx.rect(brickX, brickY, brickWidth, brickHeight);
+          ctx.fillStyle = bricks[c][r].color;
+          ctx.fill();
           ctx.closePath();
         }
       }
@@ -216,7 +212,6 @@
 
 
 
-
   //Interface Logic: Call Functions
   function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -226,6 +221,7 @@
       collisionDetection();
       drawScore();
       drawLives();
+
 
       if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
           dx = -dx;
